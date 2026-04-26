@@ -1,9 +1,11 @@
 package db
 
 import (
+	"context"
 	"errors"
 
 	"github.com/lionellc/fusion-gate/internal/config"
+	"github.com/lionellc/fusion-gate/internal/domain/user/entity"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -19,6 +21,9 @@ func NewDB(cfg *config.Config) (*DB, func(), error) {
 		if err != nil {
 			return nil, nil, err
 		}
+
+		db.AutoMigrate(&entity.User{})
+
 		d := &DB{db: db}
 		cleanup := func() {
 			_ = d.Close()
@@ -28,6 +33,10 @@ func NewDB(cfg *config.Config) (*DB, func(), error) {
 		return nil, nil, errors.New("invalid database type")
 
 	}
+}
+
+func (d *DB) WithContext(ctx context.Context) *gorm.DB {
+	return d.db.WithContext(ctx)
 }
 
 func (d *DB) Close() error {
