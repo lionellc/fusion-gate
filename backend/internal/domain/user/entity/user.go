@@ -17,7 +17,7 @@ const (
 )
 
 type User struct {
-	ID        string     `gorm:"primaryKey"`
+	ID        int64      `gorm:"primaryKey;autoIncrement"`
 	Email     string     `gorm:"size:100;uniqueIndex;not null"`
 	Password  string     `gorm:"size:200;not null"` // bcrypt hash
 	Name      string     `gorm:"size:100"`

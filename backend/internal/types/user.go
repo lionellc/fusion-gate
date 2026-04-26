@@ -7,7 +7,7 @@ type RegisterReq struct {
 }
 
 type RegisterResp struct {
-	ID    string `json:"id"`
+	ID    int64  `json:"id"`
 	Email string `json:"email"`
 	Name  string `json:"name"`
 }
@@ -23,13 +23,13 @@ type LoginResp struct {
 }
 
 type UserResp struct {
-	ID    string `json:"id"`
+	ID    int64  `json:"id"`
 	Email string `json:"email"`
 	Name  string `json:"name"`
 }
 
 type ProfileResp struct {
-	ID      string  `json:"id"`
+	ID      int64   `json:"id"`
 	Email   string  `json:"email"`
 	Name    string  `json:"name"`
 	Balance float64 `json:"balance"`

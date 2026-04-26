@@ -6,8 +6,8 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/lionellc/fusion-gate/internal/config"
-	"github.com/lionellc/fusion-gate/internal/domain/user/client"
 	"github.com/lionellc/fusion-gate/internal/domain/user/entity"
+	"github.com/lionellc/fusion-gate/internal/domain/user/repo"
 	appErrs "github.com/lionellc/fusion-gate/internal/errs"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -22,10 +22,10 @@ type AuthService interface {
 
 type authService struct {
 	cfg        *config.Config
-	userClient client.UserClient
+	userClient repo.UserRepo
 }
 
-func NewAuthService(cfg *config.Config, userClient client.UserClient) AuthService {
+func NewAuthService(cfg *config.Config, userClient repo.UserRepo) AuthService {
 	return &authService{cfg: cfg, userClient: userClient}
 }
 

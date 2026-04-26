@@ -5,7 +5,8 @@ import (
 	"errors"
 
 	"github.com/lionellc/fusion-gate/internal/config"
-	"github.com/lionellc/fusion-gate/internal/domain/user/entity"
+	apikeyentity "github.com/lionellc/fusion-gate/internal/domain/apikey/entity"
+	userentity "github.com/lionellc/fusion-gate/internal/domain/user/entity"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -22,7 +23,7 @@ func NewDB(cfg *config.Config) (*DB, func(), error) {
 			return nil, nil, err
 		}
 
-		db.AutoMigrate(&entity.User{})
+		db.AutoMigrate(&userentity.User{}, &apikeyentity.APIKey{})
 
 		d := &DB{db: db}
 		cleanup := func() {

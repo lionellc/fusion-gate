@@ -7,11 +7,12 @@ import (
 )
 
 type Handler struct {
-	userHandler *UserHandler
+	userHandler   *UserHandler
+	apikeyHandler *APIKeyHandler
 }
 
-func NewHandler(userHandler *UserHandler) *Handler {
-	return &Handler{userHandler: userHandler}
+func NewHandler(userHandler *UserHandler, apikeyHandler *APIKeyHandler) *Handler {
+	return &Handler{userHandler: userHandler, apikeyHandler: apikeyHandler}
 }
 
 func NewRouter(handler *Handler, _ *redis.RedisClient) *gin.Engine {
@@ -37,6 +38,15 @@ func NewRouter(handler *Handler, _ *redis.RedisClient) *gin.Engine {
 	user.Use(middleware.JWTAuthMiddleware(userHandler.authService))
 	{
 		user.GET("/profile", userHandler.GetProfile)
+	}
+
+	apikeyHandler := handler.apikeyHandler
+	apikey := engine.Group("/api/v1/apikey")
+	apikey.Use(middleware.JWTAuthMiddleware(userHandler.authService))
+	{
+		apikey.POST("/create", apikeyHandler.Create)
+		apikey.GET("/list", apikeyHandler.List)
+		apikey.DELETE("/:id", apikeyHandler.Delete)
 	}
 
 	return engine

@@ -1,4 +1,4 @@
-package client
+package repo
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"github.com/lionellc/fusion-gate/internal/domain/user/entity"
 )
 
-type UserClient interface {
+type UserRepo interface {
 	Create(ctx context.Context, user *entity.User) error
 	GetById(ctx context.Context, id int64) (*entity.User, error)
 	GetByEmail(ctx context.Context, email string) (*entity.User, error)
