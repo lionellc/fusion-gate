@@ -18,6 +18,7 @@ func wireApp(cfg *config.Config) (*gin.Engine, func(), error) {
 	panic(wire.Build(
 		infra.ProviderSet,
 		domain.ProviderSet,
+		handler.NewAPIKeyHandler,
 		handler.NewUserHandler,
 		handler.NewHandler,
 		handler.NewRouter,
