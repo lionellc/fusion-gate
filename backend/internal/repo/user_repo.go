@@ -20,7 +20,7 @@ func (r *UserRepo) Create(ctx context.Context, user *entity.User) error {
 	return r.db.WithContext(ctx).Create(user).Error
 }
 
-func (r *UserRepo) GetByID(ctx context.Context, id int64) (*entity.User, error) {
+func (r *UserRepo) GetById(ctx context.Context, id int64) (*entity.User, error) {
 	var user entity.User
 	err := r.db.WithContext(ctx).First(&user, id).Error
 	if err == gorm.ErrRecordNotFound {
@@ -43,7 +43,7 @@ func (r *UserRepo) Update(ctx context.Context, user *entity.User) error {
 }
 
 func (r *UserRepo) GetBalance(ctx context.Context, id int64) (float64, error) {
-	user, err := r.GetByID(ctx, id)
+	user, err := r.GetById(ctx, id)
 	if err != nil {
 		return 0, err
 	}

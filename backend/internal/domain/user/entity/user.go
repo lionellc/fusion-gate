@@ -35,3 +35,7 @@ func (u *User) IsActive() bool {
 func (u *User) IsAdmin() bool {
 	return u.Role == RoleAdmin
 }
+
+func (r *UserRole) String() string {
+	return string(*r)
+}
