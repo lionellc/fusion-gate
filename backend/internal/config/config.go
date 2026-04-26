@@ -8,7 +8,7 @@ type Config struct {
 	Server   ServerConfig   `mapstructure:"server"`
 	Database DatabaseConfig `mapstructure:"database"`
 	Redis    RedisConfig    `mapstructure:"redis"`
-	Jwt      JwtConfig      `mapstructure:"jwt"`
+	JWT      JwtConfig      `mapstructure:"jwt"`
 }
 
 type ServerConfig struct {

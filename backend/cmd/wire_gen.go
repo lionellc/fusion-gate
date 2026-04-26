@@ -9,9 +9,11 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/lionellc/fusion-gate/internal/config"
+	"github.com/lionellc/fusion-gate/internal/domain/user/service"
 	"github.com/lionellc/fusion-gate/internal/handler"
 	"github.com/lionellc/fusion-gate/internal/infra/db"
 	"github.com/lionellc/fusion-gate/internal/infra/redis"
+	"github.com/lionellc/fusion-gate/internal/repo"
 )
 
 // Injectors from wire.go:
@@ -21,12 +23,16 @@ func wireApp(cfg *config.Config) (*gin.Engine, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
+	userRepo := repo.NewUserRepo(dbDB)
+	authService := service.NewAuthService(cfg, userRepo)
+	userHandler := handler.NewUserHandler(authService)
+	handlerHandler := handler.NewHandler(userHandler)
 	redisClient, cleanup2, err := redis.NewRedisClient(cfg)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	engine := handler.NewRouter(dbDB, redisClient)
+	engine := handler.NewRouter(handlerHandler, redisClient)
 	return engine, func() {
 		cleanup2()
 		cleanup()
