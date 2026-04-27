@@ -7,12 +7,13 @@ import (
 )
 
 type Handler struct {
-	userHandler   *UserHandler
-	apikeyHandler *APIKeyHandler
+	userHandler    *UserHandler
+	apikeyHandler  *APIKeyHandler
+	channelHandler *ChannelHandler
 }
 
-func NewHandler(userHandler *UserHandler, apikeyHandler *APIKeyHandler) *Handler {
-	return &Handler{userHandler: userHandler, apikeyHandler: apikeyHandler}
+func NewHandler(userHandler *UserHandler, apikeyHandler *APIKeyHandler, channelHandler *ChannelHandler) *Handler {
+	return &Handler{userHandler: userHandler, apikeyHandler: apikeyHandler, channelHandler: channelHandler}
 }
 
 func NewRouter(handler *Handler, _ *redis.RedisClient) *gin.Engine {
@@ -49,5 +50,21 @@ func NewRouter(handler *Handler, _ *redis.RedisClient) *gin.Engine {
 		apikey.DELETE("/:id", apikeyHandler.Delete)
 	}
 
+	// 渠道管理接口（需要JWT，管理员）
+	channelHandler := handler.channelHandler
+	channels := engine.Group("/api/v1/channels")
+	channels.Use(middleware.JWTAuthMiddleware(userHandler.authService))
+	{
+		channels.POST("", channelHandler.Create)
+		channels.GET("", channelHandler.List)
+		channels.GET("/:id", channelHandler.Get)
+		channels.PUT("/:id", channelHandler.Update)
+		channels.DELETE("/:id", channelHandler.Delete)
+		channels.POST("/:id/test", channelHandler.Test)
+		channels.GET("/:id/status", channelHandler.Status)
+		channels.POST("/:id/enable", channelHandler.Enable)
+		channels.POST("/:id/disable", channelHandler.Disable)
+		channels.POST("/:id/reset-circuit", channelHandler.ResetCircuit)
+	}
 	return engine
 }

@@ -3,10 +3,13 @@ package domain
 import (
 	"github.com/google/wire"
 	apikeyService "github.com/lionellc/fusion-gate/internal/domain/apikey/service"
-	"github.com/lionellc/fusion-gate/internal/domain/user/service"
+	channelService "github.com/lionellc/fusion-gate/internal/domain/channel/service"
+	authService "github.com/lionellc/fusion-gate/internal/domain/user/service"
 )
 
 var ProviderSet = wire.NewSet(
-	service.NewAuthService,
+	authService.NewAuthService,
 	apikeyService.NewAPIKeyService,
+	channelService.NewHealthCheckService,
+	channelService.NewChannelService,
 )
