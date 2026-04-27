@@ -20,6 +20,7 @@ func wireApp(cfg *config.Config) (*gin.Engine, func(), error) {
 		domain.ProviderSet,
 		handler.NewAPIKeyHandler,
 		handler.NewUserHandler,
+		handler.NewChannelHandler,
 		handler.NewHandler,
 		handler.NewRouter,
 	))

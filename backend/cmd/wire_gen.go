@@ -10,9 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lionellc/fusion-gate/internal/config"
 	service2 "github.com/lionellc/fusion-gate/internal/domain/apikey/service"
+	service3 "github.com/lionellc/fusion-gate/internal/domain/channel/service"
 	"github.com/lionellc/fusion-gate/internal/domain/user/service"
 	"github.com/lionellc/fusion-gate/internal/handler"
 	"github.com/lionellc/fusion-gate/internal/infra/db"
+	"github.com/lionellc/fusion-gate/internal/infra/logger"
 	"github.com/lionellc/fusion-gate/internal/infra/persistence"
 	"github.com/lionellc/fusion-gate/internal/infra/redis"
 )
@@ -30,7 +32,12 @@ func wireApp(cfg *config.Config) (*gin.Engine, func(), error) {
 	apiKeyRepo := persistence.NewAPIKeyRepo(dbDB)
 	apiKeyService := service2.NewAPIKeyService(apiKeyRepo)
 	apiKeyHandler := handler.NewAPIKeyHandler(apiKeyService)
-	handlerHandler := handler.NewHandler(userHandler, apiKeyHandler)
+	channelRepo := persistence.NewChannelRepo(dbDB)
+	slogLogger := logger.NewLogger()
+	healthCheckService := service3.NewHealthCheckService(channelRepo, slogLogger)
+	channelService := service3.NewChannelService(channelRepo, healthCheckService)
+	channelHandler := handler.NewChannelHandler(channelService)
+	handlerHandler := handler.NewHandler(userHandler, apiKeyHandler, channelHandler)
 	redisClient, cleanup2, err := redis.NewRedisClient(cfg)
 	if err != nil {
 		cleanup()
